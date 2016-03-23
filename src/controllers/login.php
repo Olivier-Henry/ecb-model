@@ -5,7 +5,11 @@ if (isset($_POST['submit'])) {
     $password = filter_input(INPUT_POST, 'password');
     
     if(checkLogin($login, $password)){
-        $response = "Login Ok !";
+        session_regenerate_id(true);
+        $_SESSION['role'] = 'client';
+        $_SESSION['login'] = $login;
+        
+        header('Location: http://chapitre.local');
     }else{
         setFlash('Les informations sont incorrectes');
         $response = getResponse('view-login', array('login' => $login));

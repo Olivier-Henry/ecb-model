@@ -1,11 +1,8 @@
 <?php
 
-$liste = array(
-    'un frigidaire',
-    'un évier en fer',
-    'un pistogauffre'
-);
+$catalogue = getCatalogue();
 
-$response = getResponse('view_produit', array('maListe' => $liste));
+$response = getResponse('view_produit', array('catalogue' => $catalogue));
+
 echo $response;
 

@@ -34,6 +34,14 @@
         <button type="submit" class="btn btn-default">Submit</button>
       </form>
       <ul class="nav navbar-nav navbar-right">
+          <?php 
+            if(isset($_SESSION['role'])){
+               echo "<li class='navbar-text'>".$_SESSION['login']."</li>";
+               echo "<li><a href='/logout'>Déconnexion</a></li>";
+            }else{
+                echo "<li><a href='/login'>Connexion</a></li>";
+            }
+          ?>
         <li><a href="#">Link</a></li>
       </ul>
     </div>

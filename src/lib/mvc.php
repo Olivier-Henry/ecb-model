@@ -93,3 +93,8 @@ function getFlash(){
 
     return $flashes;
 }
+
+function currency_format($montant){
+    $str = str_replace('.', ',', $montant);
+    return $str.'€';
+}
