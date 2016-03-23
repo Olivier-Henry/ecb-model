@@ -1,5 +1,5 @@
 <div class="col-md-4 col-md-offset-4">
-    <form class="form">
+    <form class="form" action="/login" method="POST">
         <div class="form-group">
             <label>Email :</label>
             <input type="text" name="login" class="form-control">
@@ -9,7 +9,7 @@
             <input type="password" name="password" class="form-control">
         </div>
         <div class="form-group">
-            <button class="btn btn-primary" type="submit">Valider</button>
+            <button class="btn btn-primary" type="submit" name="submit">Valider</button>
         </div>
     </form>
 </div>
