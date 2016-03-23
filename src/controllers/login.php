@@ -7,12 +7,13 @@ if (isset($_POST['submit'])) {
     if(checkLogin($login, $password)){
         $response = "Login Ok !";
     }else{
-        $response = "Login Ko !";
+        setFlash('Les informations sont incorrectes');
+        $response = getResponse('view-login', array('login' => $login));
     }
 
 } else {
 
-    $response = getResponse('view-login');
+    $response = getResponse('view-login', array('login' => ''));
 }
 
 echo $response;
