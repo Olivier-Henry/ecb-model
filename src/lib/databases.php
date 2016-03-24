@@ -118,7 +118,7 @@ function getTotauxPanier($id) {
  * Ajout d'un nouveau genre
  * @param String $genre
  */
-function ajouterGenre($genre){
+function ajouterGenre($genre) {
     $pdo = getPDO();
     $sql = "INSERT INTO genres(genre)"
             . " VALUES "
@@ -129,7 +129,7 @@ function ajouterGenre($genre){
     ));
 }
 
-function checkGenre($genre){
+function checkGenre($genre) {
     $pdo = getPDO();
     $sql = "SELECT EXISTS(SELECT * FROM genres WHERE genre=?) as ok";
     $stmt = $pdo->prepare($sql);
@@ -145,7 +145,7 @@ function checkGenre($genre){
  * @param String $nom
  * @param String $prenom
  */
-function ajouterAuteur($nom, $prenom){
+function ajouterAuteur($nom, $prenom) {
     $pdo = getPDO();
     $sql = "INSERT INTO auteurs(nom, prenom)"
             . " VALUES "
@@ -163,7 +163,7 @@ function ajouterAuteur($nom, $prenom){
  * @param String $prenom
  * @return Boolean
  */
-function checkAuteur($nom, $prenom){
+function checkAuteur($nom, $prenom) {
     $pdo = getPDO();
     $sql = "SELECT EXISTS(SELECT * FROM auteurs WHERE nom=? and prenom=?) as ok";
     $stmt = $pdo->prepare($sql);
@@ -179,7 +179,7 @@ function checkAuteur($nom, $prenom){
  * Ajout d'un editeur
  * @param String $nom
  */
-function ajouterEditeur($nom){
+function ajouterEditeur($nom) {
     $pdo = getPDO();
     $sql = "INSERT INTO editeurs(nom)"
             . " VALUES "
@@ -195,7 +195,7 @@ function ajouterEditeur($nom){
  * @param string $nom
  * @return boolean
  */
-function checkEditeur($nom){
+function checkEditeur($nom) {
     $pdo = getPDO();
     $sql = "SELECT EXISTS(SELECT * FROM editeurs WHERE nom=?) as ok";
     $stmt = $pdo->prepare($sql);
@@ -204,4 +204,28 @@ function checkEditeur($nom){
     ));
     $rs = $stmt->fetch();
     return $rs['ok'];
+}
+
+/**
+ * Recupère un array pour générer des options
+ * @param String $nomTable
+ * @param mixed $nomColonnes
+ * @return array
+ */
+function getOptionsValues($nomTable, $nomColonnes) {
+    $select = 'id';
+    if (is_array($nomColonnes)) {
+        $select .= ",CONCAT_WS(' '";
+        foreach ($nomColonnes as $value) {
+            $select .= ','.$value;
+        }
+        $select .= ') as value';
+    } else {
+      $select .= ','.$nomColonnes.' as value';  
+    }
+    
+    $pdo = getPDO();
+    $sql = "SELECT $select FROM $nomTable";  
+    $rs = $pdo->query($sql);   
+    return $rs;
 }
