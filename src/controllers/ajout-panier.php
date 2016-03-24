@@ -20,6 +20,8 @@ try {
     echo $ex->getMessage();
 }
 
+header("Location: /produit");
+
 
 
 

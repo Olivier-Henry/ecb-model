@@ -87,11 +87,55 @@ function ajoutQuantitePanier($idProduit, $idClient, $qt = 1) {
             . "qt=(qt+:qt)"
             . " WHERE produit_id=:produitId AND "
             . "client_id=:clientId";
-    
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(
         'produitId' => $idProduit,
         'clientId' => $idClient,
         'qt' => $qt
     ));
+}
+
+/**
+ * Récuperation d'un Rs des totaux pour le panier
+ * @param type $id
+ * @return Recorset
+ */
+function getTotauxPanier($id) {
+    $pdo = getPDO();
+    $sql = "SELECT SUM(qt) as qt_articles, sum(qt*prix) as tot_prix FROM panier AS p "
+            . "INNER JOIN livres AS l "
+            . "ON p.produit_id=l.id "
+            . "WHERE client_id=?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        $id
+    ));
+    return $stmt->fetch();
+}
+
+/**
+ * Ajout d'un nouveau genre
+ * @param String $genre
+ */
+function ajouterGenre($genre){
+    $pdo = getPDO();
+    $sql = "INSERT INTO genres(genre)"
+            . " VALUES "
+            . "(?)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        $genre
+    ));
+}
+
+function checkGenre($genre){
+    $pdo = getPDO();
+    $sql = "SELECT EXISTS(SELECT * FROM genres WHERE genre=?) as ok";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        $genre,
+    ));
+    $rs = $stmt->fetch();
+    return $rs['ok'];
 }
