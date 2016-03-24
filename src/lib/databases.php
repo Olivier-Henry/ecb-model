@@ -139,3 +139,69 @@ function checkGenre($genre){
     $rs = $stmt->fetch();
     return $rs['ok'];
 }
+
+/**
+ * Ajout d'un nouvel auteur
+ * @param String $nom
+ * @param String $prenom
+ */
+function ajouterAuteur($nom, $prenom){
+    $pdo = getPDO();
+    $sql = "INSERT INTO auteurs(nom, prenom)"
+            . " VALUES "
+            . "(:nom, :prenom)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        'nom' => $nom,
+        'prenom' => $prenom
+    ));
+}
+
+/**
+ * Verification qu'un auteur existe
+ * @param String $nom
+ * @param String $prenom
+ * @return Boolean
+ */
+function checkAuteur($nom, $prenom){
+    $pdo = getPDO();
+    $sql = "SELECT EXISTS(SELECT * FROM auteurs WHERE nom=? and prenom=?) as ok";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        $nom,
+        $prenom
+    ));
+    $rs = $stmt->fetch();
+    return $rs['ok'];
+}
+
+/**
+ * Ajout d'un editeur
+ * @param String $nom
+ */
+function ajouterEditeur($nom){
+    $pdo = getPDO();
+    $sql = "INSERT INTO editeurs(nom)"
+            . " VALUES "
+            . "(?)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        $nom
+    ));
+}
+
+/**
+ * Verification de l'existence d'un editeur
+ * @param string $nom
+ * @return boolean
+ */
+function checkEditeur($nom){
+    $pdo = getPDO();
+    $sql = "SELECT EXISTS(SELECT * FROM editeurs WHERE nom=?) as ok";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        $nom
+    ));
+    $rs = $stmt->fetch();
+    return $rs['ok'];
+}
