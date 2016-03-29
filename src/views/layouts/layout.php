@@ -27,11 +27,11 @@
                             <li><a href="#">Link</a></li>
 
                         </ul>
-                        <form class="navbar-form navbar-left" role="search">
+                        <form class="navbar-form navbar-left" method="GET" action="/produit" role="search">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Recherche">
+                                <input type="text" name="recherche" class="form-control" placeholder="Recherche">
                             </div>
-                            <button type="submit" class="btn btn-default">Submit</button>
+                            <button type="submit" class="btn btn-default">Rechercher</button>
                         </form>
                         <ul class="nav navbar-nav navbar-right">
                             <?php if (isset($_SESSION['role'])): ?>

@@ -10,7 +10,8 @@ function getPDO() {
 
 function checkLogin($login, $password) {
     $pdo = getPDO();
-    $sql = "SELECT EXISTS(SELECT * FROM clients WHERE email=? AND password=?) as ok";
+    $sql = "SELECT EXISTS(SELECT * FROM clients "
+            . "WHERE email=? AND password=?) as ok";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(
         $login,
@@ -25,12 +26,49 @@ function checkLogin($login, $password) {
  * 
  * @return ResultSet of vue_catalogue
  */
-function getCatalogue() {
+function getCatalogue($page = 1, $nbLivresParPage = null, $recherche = null) {
     $pdo = getPDO();
-    $sql = "SELECT * FROM vue_catalogue";
+    
+    $condition = getConditionLivre($recherche);
+    
+    if ($nbLivresParPage == null) {
+        $sql = "SELECT * FROM vue_catalogue $condition";
+    }else{
+        $offset =($page-1)*$nbLivresParPage;
+         $sql = "SELECT * FROM vue_catalogue $condition "
+                 . "LIMIT $nbLivresParPage "
+                 . "OFFSET $offset";
+    }
     $rs = $pdo->query($sql);
-
+ 
     return $rs;
+}
+
+function getConditionLivre($recherche){
+    $condition = "";
+    
+    if($recherche != null){
+        $recherche = "%$recherche%";
+        $condition = "WHERE titre LIKE '$recherche' "
+                . "OR nom_editeur LIKE '$recherche' "
+                . "OR nom_auteur LIKE '$recherche' "
+                . "OR genre LIKE '$recherche'";
+    }
+    return $condition;
+}
+/**
+ * Retourne le nombre de livres
+ * @return int
+ */
+function getNbLivres($recherche = null) {
+    $pdo = getPDO();
+    
+    $condition = getConditionLivre($recherche);
+    
+    $sql = "SELECT COUNT(*) AS nb FROM vue_catalogue $condition";
+    $rs = $pdo->query($sql)->fetch();
+
+    return $rs['nb'];
 }
 
 /**
@@ -134,7 +172,7 @@ function checkGenre($genre) {
     $sql = "SELECT EXISTS(SELECT * FROM genres WHERE genre=?) as ok";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(
-        $genre,
+        $genre
     ));
     $rs = $stmt->fetch();
     return $rs['ok'];
@@ -217,15 +255,15 @@ function getOptionsValues($nomTable, $nomColonnes) {
     if (is_array($nomColonnes)) {
         $select .= ",CONCAT_WS(' '";
         foreach ($nomColonnes as $value) {
-            $select .= ','.$value;
+            $select .= ',' . $value;
         }
         $select .= ') as value';
     } else {
-      $select .= ','.$nomColonnes.' as value';  
+        $select .= ',' . $nomColonnes . ' as value';
     }
-    
+
     $pdo = getPDO();
-    $sql = "SELECT $select FROM $nomTable";  
-    $rs = $pdo->query($sql);   
+    $sql = "SELECT $select FROM $nomTable";
+    $rs = $pdo->query($sql);
     return $rs;
 }
