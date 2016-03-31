@@ -76,16 +76,15 @@ function getPDO() {
  * @param type $login as nom du client
  * @return Integer id du client
  */
-//function getClientInfo($login) {
-//    $pdo = getPDO();
-//    $sql = "SELECT id FROM clients WHERE email=?";
-//    $stmt = $pdo->prepare($sql);
-//    $stmt->execute(array($login));
-//
-//    $rs = $stmt->fetch();
-//
-//    return $rs['id'];
-//}
+function getClientInfo($login) {
+    $pdo = getPDO();
+    $sql = "SELECT id FROM clients WHERE email=?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array($login));
+
+    $rs = $stmt->fetch();
+    return $rs['id'];
+}
 
 /**
  * 

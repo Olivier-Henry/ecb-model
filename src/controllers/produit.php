@@ -17,6 +17,7 @@ $catalogue = $dao->search(
             'genre'
             ), $recherche, $nbLivresParPage, $page);
 
+//var_dump($catalogue);
 //Nombre de résultats
 $nbTotalLivres = $dao->getNbLivres()['nb'];
 

@@ -82,8 +82,8 @@ class DAOLivre implements IDAO {
         $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM vue_catalogue";
         if (!empty($data) && $recherche != null) {
             $where = array();
-            foreach ($data as $key => $value) {
-                $recherche = "%$recherche%";
+            $recherche = "%$recherche%";
+            foreach ($data as $key => $value) {               
                 array_push($where, "$value LIKE ?");
                 $data[$key] = $recherche;
             }
@@ -96,11 +96,9 @@ class DAOLivre implements IDAO {
         if ($nbLivresParPage != null) {
             $offset = ($page - 1) * $nbLivresParPage;
             $sql .= " LIMIT $nbLivresParPage OFFSET $offset";
-        }
-        echo $sql;
+        }    
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($data);
-
+        $stmt->execute($data);     
         return $stmt->fetchAll();
     }
 
