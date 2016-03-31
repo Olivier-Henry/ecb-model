@@ -31,6 +31,19 @@ class DAOClient implements IDAO {
         ));
     }
 
+    public function exist($login, $password) {   
+        $sql = "SELECT EXISTS(SELECT * FROM clients "
+                . "WHERE email=? AND password=?) as ok";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(array(
+            $login,
+            sha1($password)
+        ));
+        $rs = $stmt->fetch();
+
+        return $rs['ok'];
+    }
+
     /**
      * Retourne un résultat en fonction d'un tableau associatif
      * @param array $data
@@ -40,7 +53,7 @@ class DAOClient implements IDAO {
         $sql = "SELECT * FROM clients";
         $where = array();
         foreach ($data as $key => $value) {
-            array_push($where, "$key:=$key");
+            array_push($where, "$key=:$key");
         }
         if (count($where) > 0) {
             $sql .= " WHERE ";

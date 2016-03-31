@@ -8,84 +8,84 @@ function getPDO() {
     return $pdo;
 }
 
-function checkLogin($login, $password) {
-    $pdo = getPDO();
-    $sql = "SELECT EXISTS(SELECT * FROM clients "
-            . "WHERE email=? AND password=?) as ok";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(
-        $login,
-        sha1($password)
-    ));
-    $rs = $stmt->fetch();
-
-    return $rs['ok'];
-}
+//function checkLogin($login, $password) {
+//    $pdo = getPDO();
+//    $sql = "SELECT EXISTS(SELECT * FROM clients "
+//            . "WHERE email=? AND password=?) as ok";
+//    $stmt = $pdo->prepare($sql);
+//    $stmt->execute(array(
+//        $login,
+//        sha1($password)
+//    ));
+//    $rs = $stmt->fetch();
+//
+//    return $rs['ok'];
+//}
 
 /**
  * 
  * @return ResultSet of vue_catalogue
  */
-function getCatalogue($page = 1, $nbLivresParPage = null, $recherche = null) {
-    $pdo = getPDO();
-    
-    $condition = getConditionLivre($recherche);
-    
-    if ($nbLivresParPage == null) {
-        $sql = "SELECT * FROM vue_catalogue $condition";
-    }else{
-        $offset =($page-1)*$nbLivresParPage;
-         $sql = "SELECT * FROM vue_catalogue $condition "
-                 . "LIMIT $nbLivresParPage "
-                 . "OFFSET $offset";
-    }
-    $rs = $pdo->query($sql);
- 
-    return $rs;
-}
+//function getCatalogue($page = 1, $nbLivresParPage = null, $recherche = null) {
+//    $pdo = getPDO();
+//    
+//    $condition = getConditionLivre($recherche);
+//    
+//    if ($nbLivresParPage == null) {
+//        $sql = "SELECT * FROM vue_catalogue $condition";
+//    }else{
+//        $offset =($page-1)*$nbLivresParPage;
+//         $sql = "SELECT * FROM vue_catalogue $condition "
+//                 . "LIMIT $nbLivresParPage "
+//                 . "OFFSET $offset";
+//    }
+//    $rs = $pdo->query($sql);
+// 
+//    return $rs;
+//}
 
-function getConditionLivre($recherche){
-    $condition = "";
-    
-    if($recherche != null){
-        $recherche = "%$recherche%";
-        $condition = "WHERE titre LIKE '$recherche' "
-                . "OR nom_editeur LIKE '$recherche' "
-                . "OR nom_auteur LIKE '$recherche' "
-                . "OR genre LIKE '$recherche'";
-    }
-    return $condition;
-}
+//function getConditionLivre($recherche){
+//    $condition = "";
+//    
+//    if($recherche != null){
+//        $recherche = "%$recherche%";
+//        $condition = "WHERE titre LIKE '$recherche' "
+//                . "OR nom_editeur LIKE '$recherche' "
+//                . "OR nom_auteur LIKE '$recherche' "
+//                . "OR genre LIKE '$recherche'";
+//    }
+//    return $condition;
+//}
 /**
  * Retourne le nombre de livres
  * @return int
  */
-function getNbLivres($recherche = null) {
-    $pdo = getPDO();
-    
-    $condition = getConditionLivre($recherche);
-    
-    $sql = "SELECT COUNT(*) AS nb FROM vue_catalogue $condition";
-    $rs = $pdo->query($sql)->fetch();
-
-    return $rs['nb'];
-}
+//function getNbLivres($recherche = null) {
+//    $pdo = getPDO();
+//    
+//    $condition = getConditionLivre($recherche);
+//    
+//    $sql = "SELECT COUNT(*) AS nb FROM vue_catalogue $condition";
+//    $rs = $pdo->query($sql)->fetch();
+//
+//    return $rs['nb'];
+//}
 
 /**
  * 
  * @param type $login as nom du client
  * @return Integer id du client
  */
-function getClientInfo($login) {
-    $pdo = getPDO();
-    $sql = "SELECT id FROM clients WHERE email=?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(array($login));
-
-    $rs = $stmt->fetch();
-
-    return $rs['id'];
-}
+//function getClientInfo($login) {
+//    $pdo = getPDO();
+//    $sql = "SELECT id FROM clients WHERE email=?";
+//    $stmt = $pdo->prepare($sql);
+//    $stmt->execute(array($login));
+//
+//    $rs = $stmt->fetch();
+//
+//    return $rs['id'];
+//}
 
 /**
  * 
