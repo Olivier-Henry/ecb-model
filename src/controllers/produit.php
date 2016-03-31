@@ -5,9 +5,20 @@ $recherche = filter_input(INPUT_GET, 'recherche', FILTER_SANITIZE_STRING);
 if($page == null){
     $page = 1;
 }
-$catalogue = getCatalogue($page, $nbLivresParPage, $recherche);
-$nbTotalLivres = getNbLivres($recherche);
-//var_dump($nbTotalLivres);
+
+
+$pdo = getPDO();
+$dao = new DAOLivre($pdo);
+$catalogue = $dao->search(
+        array(
+            'titre',
+            'nom_editeur',
+            'nom_auteur',
+            'genre'
+            ), $recherche, $nbLivresParPage, $page);
+
+//Nombre de résultats
+$nbTotalLivres = $dao->getNbLivres()['nb'];
 
 //calcul du nombre de pages
 $nbPages = (int)$nbTotalLivres/$nbLivresParPage;
@@ -17,8 +28,7 @@ if($nbTotalLivres%$nbLivresParPage > 0){
     $nbPages++;
 }
 
-
-
+//Envoi à la vue
 $response = getResponse('view_produit', array(
     'catalogue' => $catalogue,
     'nbPages' => $nbPages,

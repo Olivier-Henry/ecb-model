@@ -15,6 +15,15 @@ class DAOLivre implements IDAO {
     public function __construct(PDO $pdo) {
         $this->pdo = $pdo;
     }
+    
+    /**
+     * Retourne le nombre d'éléments de la dernière requête SQL
+     * @return array
+     */
+    public function getNbLivres(){
+        $sql = "SELECT FOUND_ROWS() as nb";
+        return $this->pdo->query($sql)->fetch();   
+    }
 
     /**
      * Efface un livre en fonction de son id
@@ -28,12 +37,10 @@ class DAOLivre implements IDAO {
         ));
     }
 
- 
-    
     /**
-     * Retourne un resultset en fonction d'un tableau associatif
+     * Retourne des livres en fonction d'un tableau associatif
      * @param array $data
-     * @return Resultset
+     * @return ResultSet
      */
     public function find(array $data) {
         $sql = "SELECT * FROM Livres";
@@ -59,6 +66,42 @@ class DAOLivre implements IDAO {
     public function findAll() {
         $sql = "SELECT * FROM vue_catalogue";
         return $this->pdo->query($sql)->fetchAll();
+    }
+
+    /**
+     * Recherche dans le catalogue
+     * Si les paramètres sont vide retournera tous les résultats avec offset
+     * @param array $data ordinal de noms de tables
+     * @param string $recherche
+     * @param int $nbLivresParPage
+     * @param int $page
+     * @return resultset
+     */
+    public function search(array $data = null, $recherche = null, $nbLivresParPage = null, $page = 1) {
+      
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM vue_catalogue";
+        if (!empty($data) && $recherche != null) {
+            $where = array();
+            foreach ($data as $key => $value) {
+                $recherche = "%$recherche%";
+                array_push($where, "$value LIKE ?");
+                $data[$key] = $recherche;
+            }
+            if (count($data) > 0) {
+                $sql .= " WHERE ";
+                $sql .= implode(" OR ", $where);
+            }
+        }
+
+        if ($nbLivresParPage != null) {
+            $offset = ($page - 1) * $nbLivresParPage;
+            $sql .= " LIMIT $nbLivresParPage OFFSET $offset";
+        }
+        echo $sql;
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($data);
+
+        return $stmt->fetchAll();
     }
 
     /**
@@ -131,7 +174,6 @@ class DAOLivre implements IDAO {
             'genre_id' => $dto->getGenre_id(),
             'auteur_id' => $dto->getAuteur_id()
         ));
-        
     }
 
 }
